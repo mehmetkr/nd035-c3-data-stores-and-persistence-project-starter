@@ -23,8 +23,6 @@ public class PetController {
     @Autowired
     private UserService userService;
     @Autowired
-    private UserRepository userRepository;
-
     @PostMapping
     public PetDTO savePet(@RequestBody PetDTO petDTO) {
 
@@ -59,7 +57,7 @@ public class PetController {
 
 //        throw new UnsupportedOperationException();
 
-        return userRepository.findCustomerById(ownerId).getPets().stream().
+        return userService.findCustomerById(ownerId).getPets().stream().
                 map(p -> {return convertPettoDTO(p);}).collect(Collectors.toList());
     }
 

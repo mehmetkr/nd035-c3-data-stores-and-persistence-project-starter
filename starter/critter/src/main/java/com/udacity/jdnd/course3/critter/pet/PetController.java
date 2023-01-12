@@ -22,7 +22,8 @@ public class PetController {
 
     @Autowired
     private UserService userService;
-    @Autowired
+
+
     @PostMapping
     public PetDTO savePet(@RequestBody PetDTO petDTO) {
 

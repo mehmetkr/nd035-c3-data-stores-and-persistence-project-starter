@@ -8,39 +8,49 @@ import java.util.List;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false)
-    private Long id;
-
-
+    private long id;
+    @ManyToMany
+    private List<Employee> employees;
+    @ManyToMany
+    private List<Pet> pets;
     private LocalDate date;
 
+    @ElementCollection(targetClass = EmployeeSkill.class)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "ScheduleActivities", joinColumns = @JoinColumn(name = "scheduleId"))
+    @Column(name = "activity")
+    private Set<EmployeeSkill> activities;
 
 
-    @ManyToOne
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
-
-
-
-    @ManyToOne
-    @JoinColumn(name = "pet_pet_ıd")
-    private Pet pet;
-
-
-    private EmployeeSkill activity;
-
-
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
+    }
+
+    public List<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(List<Employee> employees) {
+        this.employees = employees;
+    }
+
+    public List<Pet> getPets() {
+        return pets;
+    }
+
+    public void setPets(List<Pet> pets) {
+        this.pets = pets;
     }
 
     public LocalDate getDate() {
@@ -51,27 +61,11 @@ public class Schedule {
         this.date = date;
     }
 
-    public Employee getEmployee() {
-        return employee;
+    public Set<EmployeeSkill> getActivities() {
+        return activities;
     }
 
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
-    }
-
-    public Pet getPet() {
-        return pet;
-    }
-
-    public void setPet(Pet pet) {
-        this.pet = pet;
-    }
-
-    public EmployeeSkill getActivity() {
-        return activity;
-    }
-
-    public void setActivity(EmployeeSkill activity) {
-        this.activity = activity;
+    public void setActivities(Set<EmployeeSkill> activities) {
+        this.activities = activities;
     }
 }

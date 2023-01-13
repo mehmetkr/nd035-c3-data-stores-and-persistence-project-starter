@@ -29,7 +29,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<Employee> findEmployeesByDay(List<EmployeeSkill> skills/*, DayOfWeek date*/);
 
 
-
-
-
+    List<Employee> findEmployeeByIdIn(List<Long> employeeIds);
 }

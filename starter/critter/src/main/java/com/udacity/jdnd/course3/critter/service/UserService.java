@@ -65,5 +65,8 @@ public class UserService {
 
 
     }
+
+    public List<Employee> findEmployeesById(List<Long> employeeIds) { return userRepository.findEmployeeByIdIn(employeeIds);}
+
 }
 

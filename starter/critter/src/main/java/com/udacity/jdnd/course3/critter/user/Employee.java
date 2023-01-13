@@ -22,9 +22,6 @@ public class Employee extends User {
     @Enumerated(EnumType.STRING)
     private Set<DayOfWeek> daysAvailable;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "employee", cascade = CascadeType.ALL)
-    private List<Schedule> schedules;
-
     public Employee() {
         super();
 
@@ -34,7 +31,6 @@ public class Employee extends User {
         super(name);
         this.skills = skills;
         this.daysAvailable = daysAvailable;
-        this.schedules = schedules;
     }
 
     public Set<EmployeeSkill> getSkills() {
@@ -53,14 +49,6 @@ public class Employee extends User {
 
         this.daysAvailable = daysAvailable;
 
-    }
-
-    public List<Schedule> getSchedules() {
-        return schedules;
-    }
-
-    public void setSchedules(List<Schedule> schedules) {
-        this.schedules = schedules;
     }
 
 }

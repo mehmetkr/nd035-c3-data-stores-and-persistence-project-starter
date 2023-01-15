@@ -5,7 +5,9 @@ import com.udacity.jdnd.course3.critter.service.UserService;
 import com.udacity.jdnd.course3.critter.user.UserRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,8 +60,19 @@ public class PetController {
 
 //        throw new UnsupportedOperationException();
 
-        return userService.findCustomerById(ownerId).getPets().stream().
-                map(p -> {return convertPettoDTO(p);}).collect(Collectors.toList());
+        List<PetDTO> pets;
+
+        try {
+            pets = userService.findCustomerById(ownerId).getPets().stream().
+                    map(p -> {
+                        return convertPettoDTO(p);
+                    }).collect(Collectors.toList());
+        }
+        catch(Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No pets found");
+        }
+
+        return pets;
     }
 
 

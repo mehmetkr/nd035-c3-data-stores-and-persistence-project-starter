@@ -5,7 +5,10 @@ import com.udacity.jdnd.course3.critter.service.PetService;
 import com.udacity.jdnd.course3.critter.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.DayOfWeek;
 import java.util.List;
@@ -47,11 +50,22 @@ public class UserController {
     }
 
     @GetMapping("/customer/pet/{petId}")
-    public CustomerDTO getOwnerByPet(@PathVariable long petId){
+    public CustomerDTO getOwnerByPet(@PathVariable long petId) {
 
 //        throw new UnsupportedOperationException();
 
-        return (CustomerDTO) convertCustomertoDTO( petService.findOwnerByPet(petId));
+        CustomerDTO customerDTO;
+
+        try{
+            customerDTO = convertCustomertoDTO( petService.findOwnerByPet(petId));
+        }
+        catch(Exception e){
+
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pet not found");
+
+        }
+
+        return customerDTO;
 
     }
 
@@ -83,10 +97,17 @@ public class UserController {
     }
 
     @PutMapping("/employee/{employeeId}")
-    public void setAvailability(@RequestBody Set<DayOfWeek> daysAvailable, @PathVariable long employeeId) {
+    public ResponseEntity setAvailability(@RequestBody Set<DayOfWeek> daysAvailable,
+                                                    @PathVariable long employeeId) {
 //        throw new UnsupportedOperationException();
 
-        userService.setEmployeeAvailability(employeeId, daysAvailable);
+        if(userService.setEmployeeAvailability(employeeId, daysAvailable) == null) {
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Employee not found");
+
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body("Availability set for employee with id " + employeeId);
 
     }
 
@@ -94,8 +115,16 @@ public class UserController {
     public List<EmployeeDTO> findEmployeesForService(@RequestBody EmployeeRequestDTO employeeRequestDTO) {
 //        throw new UnsupportedOperationException();
 
-        return userService.findEmployeesForService(employeeRequestDTO.getSkills(), employeeRequestDTO.getDate()).stream().
+        List<EmployeeDTO> employeeList = userService.findEmployeesForService(employeeRequestDTO.getSkills(), employeeRequestDTO.getDate()).stream().
                 map(e -> {return convertEmployeetoDTO(e);}).collect(Collectors.toList());
+
+        if(employeeList.isEmpty()) {
+
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No employees found.");
+
+        }
+
+        return employeeList;
 
     }
 

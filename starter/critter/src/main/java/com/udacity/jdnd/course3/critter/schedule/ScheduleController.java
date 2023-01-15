@@ -8,7 +8,9 @@ import com.udacity.jdnd.course3.critter.service.UserService;
 import com.udacity.jdnd.course3.critter.user.Employee;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,9 +58,16 @@ public class ScheduleController {
     public List<ScheduleDTO> getScheduleForPet(@PathVariable long petId) {
 //         throw new UnsupportedOperationException();
 
-        return scheduleService.getScheduleForPet(petService.findPetById(petId)).stream().
+        List<ScheduleDTO> schedules = scheduleService.getScheduleForPet(petService.findPetById(petId)).stream().
                 map(s -> {return convertScheduletoDTO(s);}).collect(Collectors.toList());
 
+        if(schedules.isEmpty()) {
+
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No schedules found.");
+
+        }
+
+        return schedules;
 
     }
 
@@ -66,9 +75,16 @@ public class ScheduleController {
     public List<ScheduleDTO> getScheduleForEmployee(@PathVariable long employeeId) {
 //        throw new UnsupportedOperationException();
 
-        return scheduleService.getScheduleForEmployee(userService.findEmployeeById(employeeId)).stream().
+        List<ScheduleDTO> schedules = scheduleService.getScheduleForEmployee(userService.findEmployeeById(employeeId)).stream().
                 map(s -> {return convertScheduletoDTO(s);}).collect(Collectors.toList());
 
+        if(schedules.isEmpty()) {
+
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No schedules found.");
+
+        }
+
+        return schedules;
 
     }
 
@@ -76,8 +92,18 @@ public class ScheduleController {
     public List<ScheduleDTO> getScheduleForCustomer(@PathVariable long customerId) {
 //        throw new UnsupportedOperationException();
 
-        return scheduleService.getScheduleForCustomer(customerId).stream().
+        List<ScheduleDTO> schedules = scheduleService.getScheduleForCustomer(customerId).stream().
                 map(s -> {return convertScheduletoDTO(s);}).collect(Collectors.toList());
+
+        if(schedules.isEmpty()) {
+
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No schedules found.");
+
+        }
+
+        return schedules;
+
+
     }
 
     private ScheduleDTO convertScheduletoDTO(Schedule schedule) {

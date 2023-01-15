@@ -4,6 +4,7 @@ import com.udacity.jdnd.course3.critter.user.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class UserService {
 
     @Autowired
@@ -55,13 +57,19 @@ public class UserService {
 
     }
 
-    public void setEmployeeAvailability(long employeeId, Set<DayOfWeek> daysAvailable) {
+    public Employee setEmployeeAvailability(long employeeId, Set<DayOfWeek> daysAvailable) {
 
         Employee employee = findEmployeeById(employeeId);
+
+        if(employee==null) {
+            return null;
+        }
 
         employee.setDaysAvailable(daysAvailable);
 
         userRepository.save(employee);
+
+        return employee;
 
 
     }

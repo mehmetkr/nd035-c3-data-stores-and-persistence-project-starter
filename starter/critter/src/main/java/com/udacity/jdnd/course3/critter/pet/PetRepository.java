@@ -9,7 +9,7 @@ import java.util.List;
 public interface PetRepository extends JpaRepository<Pet, Long>  {
 
     //    @Query("select p from Pet where p.id=:petId")
-    Pet findPetByPetId(Long petId);
+    Pet findPetByPetId(long petId);
 
     List<Pet> findByPetIdIn(List<Long> petIds);
 
